@@ -8,8 +8,9 @@ import passport from "passport";
 import express, { json, urlencoded } from "express";
 import { cookieKey, HOST, PORT } from "./config/configEnv.js";
 import { connectDB } from "./config/configDb.js";
-import { createUsers } from "./config/initialSetup.js";
+import { createEspaciosComunes, createUsers } from "./config/initialSetup.js";
 import { passportJwtSetup } from "./auth/passport.auth.js";
+import reservaRoutes from "./routes/reserva.routes.js";
 
 async function setupServer() {
   try {
@@ -61,6 +62,8 @@ async function setupServer() {
 
     app.use("/api", indexRoutes);
 
+    app.use("/api/reservas", reservaRoutes);
+    
     app.listen(PORT, () => {
       console.log(`=> Servidor corriendo en ${HOST}:${PORT}/api`);
     });
@@ -74,6 +77,8 @@ async function setupAPI() {
     await connectDB();
     await setupServer();
     await createUsers();
+    await createEspaciosComunes(); // <-- Agrega esta línea
+
   } catch (error) {
     console.log("Error en index.js -> setupAPI(), el error es: ", error);
   }
